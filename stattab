@@ -1,0 +1,57 @@
+return function(Tab)
+    -- Paragraph
+    local StatsParagraph = Tab:CreateParagraph({
+        Title = "Player Info:",
+        Content = "Click 'Update Player Info' to view info"
+    })
+
+    -- Button
+    local StatsButton = Tab:CreateButton({
+        Name = "Update Player Info",
+        Callback = function()
+            local player = game:GetService("Players").LocalPlayer
+
+            -- Gather stats
+            local areaHandler = player.PlayerGui:FindFirstChild("Area") 
+                and player.PlayerGui.Area:FindFirstChild("Handler")
+            local currentArea = areaHandler and areaHandler:FindFirstChild("Value") 
+                and areaHandler.Value.Value or "Unknown"
+
+            local dialogueGui = player.PlayerGui:FindFirstChild("Dialogue")
+            local inDialogue = dialogueGui and dialogueGui.Enabled and true or false
+
+            local questFrame = player.PlayerGui:FindFirstChild("Quest") 
+                and player.PlayerGui.Quest:FindFirstChild("Mission")
+            local questStatus = questFrame and questFrame.Visible and "In Quest" or "Not in Quest"
+
+            local repeatFrame = player.PlayerGui:FindFirstChild("Quest") 
+                and player.PlayerGui.Quest:FindFirstChild("Repeat")
+            local repeatStatus = repeatFrame and repeatFrame.Visible and "Can Repeat" or "Cannot Repeat"
+
+            local mobileGui = player.PlayerGui:FindFirstChild("Mobile")
+            local platform = mobileGui and mobileGui.Enabled and "Mobile" or "PC"
+
+            local bossNameValue = player.PlayerGui:FindFirstChild("BossName")
+            local lastBoss = bossNameValue and bossNameValue.Value or "None"
+
+            local stats = {
+                {Name = "Platform", Value = platform},
+                {Name = "Current Area", Value = currentArea},
+                {Name = "In Dialogue", Value = tostring(inDialogue)},
+                {Name = "Quest Status", Value = questStatus},
+                {Name = "Repeat Quest", Value = repeatStatus},
+                {Name = "Last Boss Attacked", Value = lastBoss}
+            }
+
+            local statsText = ""
+            for _, stat in ipairs(stats) do
+                statsText = statsText .. stat.Name .. ": " .. stat.Value .. "\n"
+            end
+
+            StatsParagraph:Set({
+                Title = "Player Info:",
+                Content = statsText
+            })
+        end
+    })
+end
